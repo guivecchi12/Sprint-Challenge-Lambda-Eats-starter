@@ -7,14 +7,15 @@ import axios from 'axios';
 const formScema = yup.object().shape({
     name: yup
         .string()
-        .min(2, "Name must be longer than 2 characters")
-        .required("name is Required"),
+        .test('len', "Must be longer than 2 characters", val => val.length > 2),
+        // .min(2, "Name must be longer than 2 characters")
+        // .required("name is Required"),
     size: yup
         .string()
-        .test('len', "Required", val => val.length !== 4),
+        .test('len', "Required", val => val.length < 0),
     sauce: yup
         .string()
-        .test('len', "Required", val => val.length !== 5),
+        .test('len', "Required", val => val.length < 0),
     top: yup
         .boolean()
         .oneOf([false], "Choose up to 10"),
@@ -56,7 +57,7 @@ const Pizza = () => {
     // }
 
     useEffect(() => {
-        if(errorState.name === ""){
+        if(errorState.name === "" && errorState.size !== "" && errorState.sauce !== ""){
             document.querySelector(".submit").disabled = false;
         }
         else{
@@ -66,7 +67,7 @@ const Pizza = () => {
         //     console.log("isValid = " + valid)
         //     setButtonDisabled(!valid);
         
-    }, [pizza]);
+    }, [errorState]);
     
     const pizzaInfo = e =>{
         e.persist();
@@ -115,7 +116,7 @@ const Pizza = () => {
             })
             .catch(err=> console.log(err));
     }
-    console.log(errorState);
+   // console.log(errorState);
     return(
         <div>
             <div>
@@ -134,14 +135,14 @@ const Pizza = () => {
                             onChange = {pizzaInfo} 
                         />
                         <div>
-                        {errorState.name.length > 0 ? (<p className="error">{errorState.name}</p>) : null}
+                        {errorState.name.length > 0 && errorState.name !== "required"? (<p className="error">{errorState.name}</p>) : null}
                         </div>
                     </label>
                     <img src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80" alt="Pizza" className="img"></img>
                     <div>Build Your Own Pizza</div>
                     <div>
                         Coice of Size
-                        {pizza.size === "size" ? (<span className="error"><br/>Required<br/></span>) : null}
+                        {pizza.size === "" ? (<span className="error"><br/>Required<br/></span>) : null}
                     </div>
                     <div>
                         <label htmlFor="size">
@@ -161,7 +162,7 @@ const Pizza = () => {
                     </div>
                     <div>
                         Choice of Sauce
-                        {pizza.sauce === "sauce" ? (<span className="error"><br/>{errorState.sauce}<br/></span>) : null}
+                        {pizza.sauce === "" ? (<span className="error"><br/>Required<br/></span>) : null}
                     </div>
                     <div>
                         <label htmlFor="sauce">
