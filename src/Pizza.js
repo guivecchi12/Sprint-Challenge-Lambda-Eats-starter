@@ -1,10 +1,14 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import * as yup from "yup";
 import {Link} from "react-router-dom";
 import axios from 'axios';
 
 
 const formScema = yup.object().shape({
+    name: yup
+        .string()
+        .min(2, "Name must be longer than 2 characters")
+        .required("name is Required"),
     size: yup
         .string()
         .test('len', "Required", val => val.length !== 4),
@@ -15,8 +19,8 @@ const formScema = yup.object().shape({
         .boolean()
         .oneOf([false], "Choose up to 10"),
     sub: yup
-        .boolean()
-        .oneOf([false], "Choose up to 1"),
+        .string(),
+        
     inst: yup
         .string(),
 
@@ -28,22 +32,41 @@ const formScema = yup.object().shape({
 
 const Pizza = () => {
     const [pizza, setPizza] = useState({
-        size: "size",
-        sauce: "sauce",
+        name: "",
+        size: "",
+        sauce: "",
         top: [],
         sub: false,
         inst: "",
-        quantity:""
+        quantity:"1"
     })
     const [errorState, setErrorState]= useState({
+        name: "required",
         size: "",
-        sauce: "Required",
-        top: [],
+        sauce: "",
+        top: "",
         sub:"",
         inst: "",
         quantity:""
     })
-    const [tops, setTops] = useState([])
+    const [tops, setTops] = useState([]);
+
+    // const setButtonDisabled = (off) =>{
+    //     document.querySelector(".submit").disabled = off;
+    // }
+
+    useEffect(() => {
+        if(errorState.name === ""){
+            document.querySelector(".submit").disabled = false;
+        }
+        else{
+            document.querySelector(".submit").disabled = true;
+        };
+        // formScema.isValid(pizza).then(valid=>{
+        //     console.log("isValid = " + valid)
+        //     setButtonDisabled(!valid);
+        
+    }, [pizza]);
     
     const pizzaInfo = e =>{
         e.persist();
@@ -88,12 +111,11 @@ const Pizza = () => {
             .post("https://reqres.in/api/users", pizza)
             .then(response=> {
                 let data=response.data;
-                alert(`Your Pizza-> Size: ${data.size}, Sauce: ${data.sauce}, Special instructions: ${data.inst}`);
+                alert(`Your name: ${data.name}, Your Pizza-> Size: ${data.size}, Sauce: ${data.sauce}`);
             })
             .catch(err=> console.log(err));
     }
-
-   
+    console.log(errorState);
     return(
         <div>
             <div>
@@ -102,6 +124,19 @@ const Pizza = () => {
             <div className="form">
                 <form onSubmit={formSubmit}>
                     <div className="header">Build Your Own Pizza</div>
+                    <label htmlFor="name">
+                        Name: 
+                        <input
+                            type="text"
+                            name="name"
+                            id="name"
+                            value = {pizza.name}
+                            onChange = {pizzaInfo} 
+                        />
+                        <div>
+                        {errorState.name.length > 0 ? (<p className="error">{errorState.name}</p>) : null}
+                        </div>
+                    </label>
                     <img src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80" alt="Pizza" className="img"></img>
                     <div>Build Your Own Pizza</div>
                     <div>
@@ -183,7 +218,7 @@ const Pizza = () => {
                     </div> 
                     <div>
                         Choice of Substitute
-                        <span><br/>choose 1<br/></span>
+                        <span className="error"><br/>choose 1<br/></span>
                         Gluten Free
                         <input
                             type="checkbox"
@@ -193,7 +228,7 @@ const Pizza = () => {
                         />
                     </div>
                     <div>
-                        Special Instructions
+                        Special Instructions: 
                         <label htmlFor ="inst">
                             <input
                             type="text"
@@ -206,6 +241,7 @@ const Pizza = () => {
                     </div>
                     <div>
                         <label htmlFor="quantity">
+                            Quantity: 
                             <input
                                 type="number"
                                 name="quantity"
@@ -215,7 +251,7 @@ const Pizza = () => {
                             />
                         </label>
                     </div>
-                    <button>Submit</button>
+                    <button className="submit">Submit</button>
                 </form>
             </div>
                 
