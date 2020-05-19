@@ -156,7 +156,7 @@ const Pizza = () => {
                                 <option value = "small">Small</option>
                                 <option value = "medium">Medium</option>
                                 <option value = "large">Large</option>
-                                <option value = "xL">Fat Ass</option>
+                                <option value = "xL">Extra Lrg</option>
                             </select>
                         </label>
                     </div>
