@@ -112,7 +112,7 @@ const Pizza = () => {
             .post("https://reqres.in/api/users", pizza)
             .then(response=> {
                 let data=response.data;
-                alert(`Your name: ${data.name}, Your Pizza-> Size: ${data.size}, Sauce: ${data.sauce}`);
+                alert(`Your name: ${data.name}, Your Pizza-> Size: ${data.size}, Sauce: ${data.sauce}, Special Instructions: ${data.inst}`);
             })
             .catch(err=> console.log(err));
     }
