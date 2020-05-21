@@ -36,3 +36,38 @@
     transform: rotate(360deg);
   }
 }
+.img{
+  width:30%;
+}
+
+form{
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+div{
+  margin:5px;
+}
+
+#name{
+  margin: 5px;
+}
+
+#quantity{
+  width:30px;
+}
+
+.error{
+  font-size: .75em;
+  color: red;
+}
+
+button{
+  margin:10px;
+}
+
+input{
+  margin-left:5px;
+}
